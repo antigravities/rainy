@@ -3,9 +3,10 @@ package filesystem
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
-	"strconv"
 
+	"get.cutie.cafe/rainy/conf"
 	"get.cutie.cafe/rainy/upload"
 )
 
@@ -15,7 +16,7 @@ type FilesystemUploader struct {
 
 func New(path string) (upload.Uploader, error) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		err := os.Mkdir(path, 0666)
+		err := os.Mkdir(path, 0755)
 
 		if err != nil {
 			return nil, err
@@ -30,19 +31,13 @@ func New(path string) (upload.Uploader, error) {
 }
 
 func (f *FilesystemUploader) MaxFileSize() uint64 {
-	num, err := strconv.ParseUint(os.Getenv("RAINY_MAX_FILE_SIZE"), 10, 64)
-
-	if err != nil {
-		return 0
-	}
-
-	return num
+	return conf.GetUInt64("MAX_FILE_SIZE")
 }
 
 func (f *FilesystemUploader) StoreFile(fileName string, file []byte) (*string, error) {
-	os.WriteFile(fmt.Sprintf("%s/%s", f.path, fileName), file, 0666)
+	os.WriteFile(fmt.Sprintf("%s/%s", f.path, fileName), file, 0660)
 
-	fp := fmt.Sprintf("%s/%s", os.Getenv("RAINY_FILE_PATH"), fileName)
+	fp := fmt.Sprintf("%s/%s", conf.GetString("PUBLIC_FILE_PATH"), fileName)
 
 	return &fp, nil
 }
@@ -58,4 +53,20 @@ func (f *FilesystemUploader) GetFile(fileName string) ([]byte, error) {
 	}
 
 	return os.ReadFile(fileName)
+}
+
+func (f *FilesystemUploader) StoreFileStream(fileName string, stream io.ReadCloser) (*string, error) {
+	file, err := os.OpenFile(fmt.Sprintf("%s/%s", f.path, fileName), os.O_WRONLY|os.O_CREATE, 0660)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = io.Copy(file, stream)
+	if err != nil {
+		return nil, err
+	}
+
+	fp := fmt.Sprintf("%s/%s", conf.GetString("PUBLIC_FILE_PATH"), fileName)
+
+	return &fp, nil
 }

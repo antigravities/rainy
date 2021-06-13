@@ -9,17 +9,17 @@ import (
 )
 
 type Server struct {
-	uploader *upload.Uploader
+	uploader upload.Uploader
 }
 
-func New(uploader *upload.Uploader) *Server {
+func New(uploader upload.Uploader) *Server {
 	return &Server{
 		uploader: uploader,
 	}
 }
 
 func (s *Server) Listen(addr string) {
-	http.Handle("/", route.New())
+	http.Handle("/", route.New(s.uploader).Router)
 
 	log.Printf("Preparing to listen on %s", addr)
 	http.ListenAndServe(addr, nil)

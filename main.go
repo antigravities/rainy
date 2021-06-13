@@ -27,5 +27,5 @@ func main() {
 		panic(err)
 	}
 
-	server.New(&uploader).Listen("0.0.0.0:4000")
+	server.New(uploader).Listen("0.0.0.0:4000")
 }
