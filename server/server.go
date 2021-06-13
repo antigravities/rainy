@@ -1,19 +1,26 @@
 package server
 
 import (
+	"log"
 	"net/http"
 
 	"get.cutie.cafe/rainy/server/route"
+	"get.cutie.cafe/rainy/upload"
 )
 
 type Server struct {
+	uploader *upload.Uploader
 }
 
-func New() *Server {
-	return &Server{}
+func New(uploader *upload.Uploader) *Server {
+	return &Server{
+		uploader: uploader,
+	}
 }
 
-func (s *Server) Listen() {
+func (s *Server) Listen(addr string) {
 	http.Handle("/", route.New())
-	http.ListenAndServe("0.0.0.0:4000", nil)
+
+	log.Printf("Preparing to listen on %s", addr)
+	http.ListenAndServe(addr, nil)
 }
