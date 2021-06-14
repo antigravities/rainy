@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"get.cutie.cafe/rainy/conf"
 	"get.cutie.cafe/rainy/upload"
@@ -44,7 +45,7 @@ func (f *FilesystemUploader) StoreFile(fileName string, file []byte) (*string, e
 
 func (f *FilesystemUploader) FileExists(fileName string) bool {
 	_, err := os.Stat(fmt.Sprintf("%s/%s", f.path, fileName))
-	return os.IsExist(err)
+	return !os.IsNotExist(err)
 }
 
 func (f *FilesystemUploader) GetFile(fileName string) ([]byte, error) {
@@ -52,7 +53,11 @@ func (f *FilesystemUploader) GetFile(fileName string) ([]byte, error) {
 		return []byte{}, errors.New("file does not exist")
 	}
 
-	return os.ReadFile(fileName)
+	// prevent directory traversal attacks
+	fileName = strings.ReplaceAll(fileName, "..", ".")
+	fileName = strings.ReplaceAll(fileName, "/", "")
+
+	return os.ReadFile(fmt.Sprintf("%s/%s", f.path, fileName))
 }
 
 func (f *FilesystemUploader) StoreFileStream(fileName string, stream io.ReadCloser) (*string, error) {

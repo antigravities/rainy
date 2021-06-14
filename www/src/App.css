@@ -1,0 +1,8 @@
+.dropzone {
+    display: block;
+    background-color: rgba(0, 0, 0, 0.1);
+    text-align: center;
+    color: rgba(0, 0, 0, 0.5);
+    padding: 2em;
+    border: 0.5em dashed rgba(0, 0, 0, 0.2);
+}

@@ -3,6 +3,7 @@ package route
 import (
 	"net/http"
 
+	"get.cutie.cafe/rainy/conf"
 	"get.cutie.cafe/rainy/static"
 	"get.cutie.cafe/rainy/upload"
 	"github.com/gorilla/mux"
@@ -21,6 +22,11 @@ func New(uploader upload.Uploader) *Router {
 
 	router.HandleFunc("/", getIndex)
 	router.HandleFunc("/upload", postUpload(uploader))
+	router.HandleFunc("/meta", getMeta(uploader))
+
+	if conf.GetInt("SHOULD_SERVE") == 1 {
+		router.HandleFunc("/f/{file}", getFile(uploader))
+	}
 
 	return &Router{
 		Uploader: uploader,
