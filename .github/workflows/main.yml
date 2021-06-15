@@ -17,8 +17,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          tags: |
-            type=sha
+          images: antigravities/rainy
       
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
