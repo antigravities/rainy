@@ -7,7 +7,7 @@ class Footer extends Component {
             <Container>
                 <hr />
 
-                <span class="text-muted">Powered by <a href="https://github.com/antigravities/rainy" target="_blank" rel="noreferrer">Rainy</a></span>
+                <span class="text-muted">Powered by <a href="https://github.com/antigravities/rainy" target="_blank" rel="noreferrer">Rainy</a> &middot; <a href="/upload">No JS mode</a></span>
             </Container>
         )
     }

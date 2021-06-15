@@ -130,9 +130,9 @@ func getUpload(uploader upload.Uploader) func(w http.ResponseWriter, r *http.Req
 			r.Form.Set("password", "")
 		}
 
-		err := runTemplate("html/boomer.html", SimpleModeVars{Meta: genMeta(uploader), Password: r.Form.Get("password")}, w)
+		err := runTemplate("html/nojs.html", SimpleModeVars{Meta: genMeta(uploader), Password: r.Form.Get("password")}, w)
 		if err != nil {
-			log.Printf("error parsing boomer template: %v", err)
+			log.Printf("error parsing nojs template: %v", err)
 			w.WriteHeader(500)
 			w.Write([]byte("Oops, there's a bit of a problem."))
 			return
