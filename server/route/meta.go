@@ -14,6 +14,7 @@ type InstanceMeta struct {
 	ContactAbuse       string  `json:"contactAbuse"`
 	ExtensionBlacklist string  `json:"extensionBlacklist"`
 	HasUploadPassword  bool    `json:"hasUploadPassword"`
+	Tagline            string  `json:"tagline"`
 }
 
 var metaJson *[]byte
@@ -27,6 +28,7 @@ func genMeta(u upload.Uploader) *InstanceMeta {
 			ContactAbuse:       conf.GetString("CONTACT_ABUSE"),
 			ExtensionBlacklist: conf.GetString("BLACKLISTED_EXTENSIONS"),
 			HasUploadPassword:  conf.GetString("UPLOAD_PASSWORD") != "",
+			Tagline:            conf.GetString("TAGLINE"),
 		}
 	}
 

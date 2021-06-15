@@ -18,7 +18,7 @@ class PageUpload extends Component {
     render() {
         return (
             <Container>
-                <h1>Upload your freshest mee-mee, fam.</h1>
+                <h1>{this.props.meta.tagline}</h1>
 
                 Any files up to {this.props.meta.maxUploadSizeMB} MB are accepted{this.props.meta.extensionBlacklist.length > 0 ? <span> (except {"." + this.props.meta.extensionBlacklist.split(",").join(", .")} files)</span> : ""}.
 
