@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import Upload from './pages/Upload';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 class App extends Component {
   constructor(props){
@@ -31,9 +33,13 @@ class App extends Component {
   render() {
     return (
       <div>
+        <Header title={this.state.meta.instanceName} />
+
         <Upload meta={this.state.meta}>
           
         </Upload>
+
+        <Footer />
       </div>
     )
   }

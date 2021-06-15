@@ -7,7 +7,7 @@ class Footer extends Component {
             <Container>
                 <hr />
 
-                &copy; 2021 <a href="https://cutie.cafe/" target="_blank" rel="noreferrer">Cutie Caf&eacute;.</a> All rights reserved.<br />
+                <span class="text-muted">Powered by <a href="https://github.com/antigravities/rainy" target="_blank" rel="noreferrer">Rainy</a></span>
             </Container>
         )
     }
