@@ -49,6 +49,13 @@ RAINY_UPLOAD_PASSWORD=Rainy
 
 RAINY_PUBLIC_UPLOAD_URL=https://eeti.me/f
 # The URL Rainy should return for uploaded files.
+
+RAINY_TAGLINE=Drop your hot mee-mees, fam.
+# The tagline shown on the front page.
+
+RAINY_WORLD_READABLE=0
+# Whether uploads should be world-readable. Only set this to 1 if you know what
+# you're doing.
 ```
 
 You're all set! Run

@@ -31,12 +31,13 @@ func New(uploader upload.Uploader) *Router {
 	router.HandleFunc("/meta", getMeta(uploader)).Methods("GET")
 	router.HandleFunc("/meta", postMeta).Methods("POST")
 	router.HandleFunc("/", getIndex(uploader))
-	router.PathPrefix("/").Handler(http.FileServer(http.FS(subfs)))
 
 	if conf.GetInt("SHOULD_SERVE") == 1 {
 		// TODO: http.FileServer()
 		router.HandleFunc("/f/{file}", getFile(uploader))
 	}
+
+	router.PathPrefix("/").Handler(http.FileServer(http.FS(subfs)))
 
 	return &Router{
 		Uploader: uploader,

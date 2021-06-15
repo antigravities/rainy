@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"strings"
 
@@ -40,8 +41,13 @@ func (f *FilesystemUploader) MaxFileSize() uint64 {
 }
 
 func (f *FilesystemUploader) StoreFile(fileName string, file []byte) (*string, error) {
-	// TODO: make perms configurable
-	os.WriteFile(fmt.Sprintf("%s/%s", f.path, fileName), file, 0666)
+	perms := 0660
+
+	if conf.GetInt("UPLOADS_WORLD_READABLE") == 1 {
+		perms = 0666
+	}
+
+	os.WriteFile(fmt.Sprintf("%s/%s", f.path, fileName), file, fs.FileMode(perms))
 
 	fp := fmt.Sprintf("%s/%s", conf.GetString("PUBLIC_FILE_PATH"), fileName)
 
@@ -66,7 +72,13 @@ func (f *FilesystemUploader) GetFile(fileName string) ([]byte, error) {
 }
 
 func (f *FilesystemUploader) StoreFileStream(fileName string, stream io.ReadCloser) (*string, error) {
-	file, err := os.OpenFile(fmt.Sprintf("%s/%s", f.path, fileName), os.O_WRONLY|os.O_CREATE, 0660)
+	perms := 0660
+
+	if conf.GetInt("UPLOADS_WORLD_READABLE") == 1 {
+		perms = 0666
+	}
+
+	file, err := os.OpenFile(fmt.Sprintf("%s/%s", f.path, fileName), os.O_WRONLY|os.O_CREATE, fs.FileMode(perms))
 	if err != nil {
 		return nil, err
 	}
