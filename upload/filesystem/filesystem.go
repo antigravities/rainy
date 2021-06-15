@@ -40,7 +40,8 @@ func (f *FilesystemUploader) MaxFileSize() uint64 {
 }
 
 func (f *FilesystemUploader) StoreFile(fileName string, file []byte) (*string, error) {
-	os.WriteFile(fmt.Sprintf("%s/%s", f.path, fileName), file, 0660)
+	// TODO: make perms configurable
+	os.WriteFile(fmt.Sprintf("%s/%s", f.path, fileName), file, 0666)
 
 	fp := fmt.Sprintf("%s/%s", conf.GetString("PUBLIC_FILE_PATH"), fileName)
 
