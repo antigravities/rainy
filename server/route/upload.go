@@ -54,8 +54,22 @@ func getRandomFilename(extension string) string {
 	return fn + "." + extension
 }
 
+func checkPassword(password string) bool {
+	pw := conf.GetString("UPLOAD_PASSWORD")
+
+	return pw == "" || password == pw
+}
+
 func postUpload(uploader upload.Uploader) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+
+		if !checkPassword(r.Form.Get("password")) {
+			w.WriteHeader(401)
+			w.Write([]byte("Invalid password"))
+			return
+		}
+
 		file, header, err := r.FormFile("file")
 		if err != nil {
 			log.Printf("error receiving file: %v", err)
@@ -99,5 +113,29 @@ func postUpload(uploader upload.Uploader) func(w http.ResponseWriter, r *http.Re
 		w.Write([]byte(*pf))
 
 		file.Close()
+	}
+}
+
+type SimpleModeVars struct {
+	Meta     *InstanceMeta
+	Password string
+}
+
+func getUpload(uploader upload.Uploader) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+		meta := genMeta(uploader)
+
+		if meta.HasUploadPassword && conf.GetString("UPLOAD_PASSWORD") != r.Form.Get("password") {
+			r.Form.Set("password", "")
+		}
+
+		err := runTemplate("html/boomer.html", SimpleModeVars{Meta: genMeta(uploader), Password: r.Form.Get("password")}, w)
+		if err != nil {
+			log.Printf("error parsing boomer template: %v", err)
+			w.WriteHeader(500)
+			w.Write([]byte("Oops, there's a bit of a problem."))
+			return
+		}
 	}
 }

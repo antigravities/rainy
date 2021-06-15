@@ -1,6 +1,7 @@
 package route
 
 import (
+	"io/fs"
 	"net/http"
 
 	"get.cutie.cafe/rainy/conf"
@@ -8,7 +9,7 @@ import (
 	"get.cutie.cafe/rainy/upload"
 	"github.com/gorilla/mux"
 
-	"text/template"
+	"html/template"
 )
 
 type Router struct {
@@ -20,11 +21,20 @@ type Router struct {
 func New(uploader upload.Uploader) *Router {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", getIndex)
-	router.HandleFunc("/upload", postUpload(uploader))
-	router.HandleFunc("/meta", getMeta(uploader))
+	subfs, err := fs.Sub(static.ModernContent, "html/modern")
+	if err != nil {
+		panic(err)
+	}
+
+	router.HandleFunc("/upload", postUpload(uploader)).Methods("POST")
+	router.HandleFunc("/upload", getUpload(uploader)).Methods("GET")
+	router.HandleFunc("/meta", getMeta(uploader)).Methods("GET")
+	router.HandleFunc("/meta", postMeta).Methods("POST")
+	router.HandleFunc("/", getIndex(uploader))
+	router.PathPrefix("/").Handler(http.FileServer(http.FS(subfs)))
 
 	if conf.GetInt("SHOULD_SERVE") == 1 {
+		// TODO: http.FileServer()
 		router.HandleFunc("/f/{file}", getFile(uploader))
 	}
 

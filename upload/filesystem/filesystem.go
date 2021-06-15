@@ -28,6 +28,10 @@ func New(path string) (upload.Uploader, error) {
 		path: path,
 	}
 
+	if !fx.FileExists("index.html") {
+		fx.StoreFile("index.html", []byte{})
+	}
+
 	return fx, nil
 }
 
@@ -45,7 +49,7 @@ func (f *FilesystemUploader) StoreFile(fileName string, file []byte) (*string, e
 
 func (f *FilesystemUploader) FileExists(fileName string) bool {
 	_, err := os.Stat(fmt.Sprintf("%s/%s", f.path, fileName))
-	return !os.IsNotExist(err)
+	return err == nil // do not !os.IsNotExist(): https://stackoverflow.com/a/12518877
 }
 
 func (f *FilesystemUploader) GetFile(fileName string) ([]byte, error) {
@@ -71,7 +75,7 @@ func (f *FilesystemUploader) StoreFileStream(fileName string, stream io.ReadClos
 		return nil, err
 	}
 
-	fp := fmt.Sprintf("%s/%s", conf.GetString("PUBLIC_FILE_PATH"), fileName)
+	fp := fmt.Sprintf("%s/%s", conf.GetString("PUBLIC_UPLOAD_URL"), fileName)
 
 	return &fp, nil
 }

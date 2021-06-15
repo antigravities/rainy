@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>
+            {{ .Meta.Name }}
+        </title>
+
+        <h1>{{ .Meta.Name }}</h1>
+
+        {{if and (.Meta.HasUploadPassword) (eq .Password "")}}
+            <form action="/upload" method="GET">
+                <input type="password" name="password" placeholder="Upload password" />
+                <input type="submit" />
+            </form>
+        {{else}}
+            All files under {{ .Meta.MaxUploadSizeMB }} MB are accepted{{if .Meta.ExtensionBlacklist }} except {{ .Meta.ExtensionBlacklist }}{{end}}.
+
+            <br><br>
+
+            <form action="" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <input type="submit">
+            </form>
+        {{end}}
+    </head>
+</html>

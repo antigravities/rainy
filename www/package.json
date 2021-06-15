@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && rm -rf ../static/html/modern && mv build ../static/html/modern",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

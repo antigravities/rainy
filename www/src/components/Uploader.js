@@ -9,13 +9,16 @@ class File {
         this.result = "";
     }
 
-    async upload(){
+    async upload(password){
         this.status = "uploading";
 
         const formData = new FormData();
         formData.append("file", this.fx);
 
-        let req = await fetch("/upload", {
+        // We pass the password as a GET variable here because if we want to parse a multipart request in Go,
+        // we need to also hold on to the files that are part of that request. In theory this could fill up
+        // the drive quickly or create situations where contraband is stored before password verification.
+        let req = await fetch("/upload?password=" + encodeURIComponent(password), {
             method: 'POST',
             body: formData
         });
@@ -36,12 +39,10 @@ class Uploader extends Component {
     async onDrop(files){
         files = files.map(i => new File(i));
 
-        console.log(files);
-
         this.setState({ files: this.state.files.concat(files) });
 
         for( let file of files ) {
-            await file.upload();
+            await file.upload(this.props.password);
 
             this.setState({ files: this.state.files });
         }
