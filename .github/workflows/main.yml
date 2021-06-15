@@ -17,7 +17,6 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: antigravities/rainy
           tags: |
             type=sha
       
