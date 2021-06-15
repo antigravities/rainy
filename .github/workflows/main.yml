@@ -25,5 +25,5 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           tags: |
-            antigravities/rainy:latest
-            antigravities/rainy:${{ github.sha }}
+            latest
+            ${{ github.sha }}
