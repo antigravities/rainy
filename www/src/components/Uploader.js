@@ -68,7 +68,7 @@ class Uploader extends Component {
     "Version": "12.4.1",
     "DestinationType": "ImageUploader, TextUploader, FileUploader",
     "RequestMethod": "POST",
-    "RequestURL": "${window.location.protocol}//${window.location.hostname}${window.location.port !== 80 && window.location.port !== 443 ? `:${window.location.port}` : ""}/upload${this.props.password ? `?password=${this.props.password}` : ""}",
+    "RequestURL": "${window.location.protocol}//${window.location.hostname}${window.location.port !== "" ? `:${window.location.port}` : ""}/upload${this.props.password ? `?password=${this.props.password}` : ""}",
     "Body": "MultipartFormData",
     "FileFormName": "file",
     "URL": "$response$"
