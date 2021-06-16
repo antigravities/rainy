@@ -63,6 +63,18 @@ class Uploader extends Component {
         }
     }
 
+    getShareX(){
+        return btoa(`{
+    "Version": "12.4.1",
+    "DestinationType": "ImageUploader, TextUploader, FileUploader",
+    "RequestMethod": "POST",
+    "RequestURL": "${window.location.protocol}//${window.location.hostname}${window.location.port !== 80 && window.location.port !== 443 ? `:${window.location.port}` : ""}/upload${this.props.password ? `?password=${this.props.password}` : ""}",
+    "Body": "MultipartFormData",
+    "FileFormName": "file",
+    "URL": "$response$"
+}`);
+    }
+
     render(){
         return (
             <div>
@@ -76,11 +88,15 @@ class Uploader extends Component {
                     )}
                 </Dropzone>
 
-                <br></br>
+                <br /><br />
 
                 <h3>Uploads</h3>
 
                 {this.state.files.length > 0 ? this.state.files.map(i => (<li key={i.fx.name}>{i.fx.name} - {this.parseStatus(i)}</li>)) : <i>There's nothing here!</i> }
+
+                <br /><br />
+
+                <a href={`data:text/plain;base64,${this.getShareX()}`} download={window.location.hostname + ".sxcu"}>Upload with ShareX</a>
             </div>
         )
     }
