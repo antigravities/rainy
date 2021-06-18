@@ -10,7 +10,6 @@ class App extends Component {
 
     this.state = {};
     this.state.meta = { extensionBlacklist: "" };
-    this.state.showModal = false;
   }
 
   async componentDidMount(){
@@ -26,19 +25,11 @@ class App extends Component {
     window.document.title = this.state.meta.instanceName;
   }
 
-  async showModal(){
-    this.setState({ showModal: true });
-  }
-
   render() {
     return (
       <div>
         <Header title={this.state.meta.instanceName} />
-
-        <Upload meta={this.state.meta}>
-          
-        </Upload>
-
+        <Upload meta={this.state.meta} />
         <Footer />
       </div>
     )
