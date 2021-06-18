@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { Container } from 'react-bootstrap';
-import Uploader from "../components/Uploader";
+import UploadTabs from "../components/UploadTabs";
+import UploadedFiles from "../components/UploadedFiles";
 import PasswordEntryForm from "../components/PasswordEntryForm";
 
 class PageUpload extends Component {
@@ -8,11 +9,35 @@ class PageUpload extends Component {
         super(props);
 
         this.state = {};
-        this.state.hasUploadPassword = props.meta.hasUploadPassword;
+
+        // a bit of a hack, but strings coerce to boolean true
+        this.state.uploadPassword = props.meta.hasUploadPassword;
+        this.state.files = [];
     }
 
     updateUploadPassword(password){
-        this.setState({ hasUploadPassword: password });
+        this.setState({ uploadPassword: password });
+    }
+
+    async onFilesQueued(files){
+        this.setState({ files: this.state.files.concat(files) });
+
+        for( let file of files ) {
+            await file.upload(this.state.uploadPassword);
+            this.setState({ files: this.state.files });
+        }
+    }
+
+    getShareX(){
+        return btoa(`{
+    "Version": "12.4.1",
+    "DestinationType": "ImageUploader, TextUploader, FileUploader",
+    "RequestMethod": "POST",
+    "RequestURL": "${window.location.protocol}//${window.location.hostname}${window.location.port !== "" ? `:${window.location.port}` : ""}/upload${this.props.password ? `?password=${this.props.password}` : ""}",
+    "Body": "MultipartFormData",
+    "FileFormName": "file",
+    "URL": "$response$"
+}`);
     }
 
     render() {
@@ -24,8 +49,10 @@ class PageUpload extends Component {
 
                 <br /><br />
 
-                {this.props.meta.hasUploadPassword && ! this.state.hasUploadPassword ? <PasswordEntryForm meta={this.props.meta} onPasswordEntered={pw => this.updateUploadPassword(pw)} /> : <Uploader password={this.state.hasUploadPassword} />}
-
+                {this.props.meta.hasUploadPassword && ! this.state.uploadPassword ?
+                    <PasswordEntryForm meta={this.props.meta} onPasswordEntered={pw => this.updateUploadPassword(pw)} /> :
+                    <><UploadTabs onFilesQueued={f => this.onFilesQueued(f)} /><hr /><UploadedFiles files={this.state.files} /></>
+                }
             </Container>
         )
     }
