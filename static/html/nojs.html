@@ -11,7 +11,7 @@
         {{if and (.Meta.HasUploadPassword) (eq .Password "")}}
             {{ .Meta.Name }} restricts who can upload to it with a password. Enter it below to gain access to the upload form.
 
-            <form action="/upload" method="GET">
+            <form action="" method="GET">
                 <input type="password" name="password" placeholder="Upload password" />
                 <input type="submit" />
             </form>
